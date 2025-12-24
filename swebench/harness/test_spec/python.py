@@ -415,6 +415,18 @@ def make_eval_script_list_py(
         reset_tests_command = f"git checkout {base_commit} {' '.join(test_files)}"
     else:
         reset_tests_command = ""
+    if instance.get("instance_id")== "astropy__astropy-8872":
+        print(f'Special instance {instance.get("instance_id")} located. Attempting to manually test-patch along with setup changes...')
+        ASTROPY_8872_MOD_PATCH = os.getenv("ASTROPY_8872_MOD_PATCH", None)
+        if ASTROPY_8872_MOD_PATCH:
+            with open(ASTROPY_8872_MOD_PATCH, "r") as f:
+                test_patch = f.read()
+    elif instance.get("instance_id")== "astropy__astropy-8707":
+        print(f'Special instance {instance.get("instance_id")} located. Attempting to manually put test-patch along with setup changes...')
+        ASTROPY_8707_MOD_PATCH = os.getenv("ASTROPY_8707_MOD_PATCH", None)
+        if ASTROPY_8707_MOD_PATCH:
+            with open(ASTROPY_8707_MOD_PATCH, "r") as f:
+                test_patch = f.read() 
     apply_test_patch_command = (
         f"git apply -v - <<'{HEREDOC_DELIMITER}'\n{test_patch}\n{HEREDOC_DELIMITER}"
     )
