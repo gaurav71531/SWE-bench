@@ -182,6 +182,14 @@ SPECS_REQUESTS = {
         "python": "3.9",
         "packages": "pytest",
         "install": "python -m pip install .",
+        "post_install": [
+            'python -m pip install httpbin[mainapp]==0.10.2 pytest-httpbin==2.1.0',
+            'openssl req -x509 -newkey rsa:2048 -keyout /tmp/server.key -out /tmp/server.pem -days 365 -nodes -subj "/CN=httpbin.org" -addext "subjectAltName=DNS:httpbin.org,DNS:localhost,IP:127.0.0.1"',
+            'nohup gunicorn -b 127.0.0.1:80 -k gevent httpbin:app &',
+            'nohup gunicorn -b 127.0.0.1:443 --certfile=/tmp/server.pem --keyfile=/tmp/server.key -k gevent httpbin:app &',
+            'cat /tmp/server.pem >> /testbed/requests/cacert.pem',
+            'echo "127.0.0.1    httpbin.org" >> /etc/hosts',
+        ],
         "test_cmd": TEST_PYTEST,
     }
     for k in ["0.7", "0.8", "0.9", "0.11", "0.13", "0.14", "1.1", "1.2", "2.0", "2.2"]

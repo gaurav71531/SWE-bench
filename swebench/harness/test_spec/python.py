@@ -457,6 +457,8 @@ def make_eval_script_list_py(
     ]
     if "install" in specs:
         eval_commands.append(specs["install"])
+    if "post_install" in specs:
+        eval_commands.extend(specs["post_install"])
     eval_commands += [
         reset_tests_command,
         apply_test_patch_command,
